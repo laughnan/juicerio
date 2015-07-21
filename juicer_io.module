@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * Module file for the Juicer Integration module.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function juicer_io_menu() {
+  $items['admin/config/user-interface/juicer'] = array(
+    'title' => t('Juicer Integration'),
+    'description' => t('Manage Juicer feeds, paging, and limits.'),
+    'type' => MENU_NORMAL_ITEM,
+    'access arguments' => array('administer juicer'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function juicer_io_permission() {
+  return array(
+    'administer juicer' => array(
+      'title' => t('Administer Juicer'),
+      'description' => t('Administration tasks for Juicer.'),
+    ),
+  );
+}
