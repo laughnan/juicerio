@@ -40,8 +40,10 @@ function juicer_io_block_view($delta = '') {
   switch ($delta) {
     case 'juicer_io_block':
       $block['subject'] = t('Juicer Feed');
+      // Add in the Juicer IO Javascript and CSS files
       drupal_add_js('//assets.juicer.io/embed.js', 'external');
       drupal_add_css('//assets.juicer.io/embed.css', 'external');
+      // Return the block content from the 'juicer_block' theme
       $block['content'] = theme('juicer_block', array('feed_id' => variable_get('juicer_io_feed_id'), 'post_num' => variable_get('juicer_io_post_number'), 'infinite_pages' => variable_get('juicer_io_infinite_pages'), 'gutter_amt' => variable_get('juicer_io_gutter_amt'), 'column_num' => variable_get('juicer_io_column_number'), 'filters' => variable_get('juicer_io_filter')));
       break;
   }
@@ -114,6 +116,8 @@ function juicer_io_block_configure($delta = '') {
  * Implements hook_block_save().
  */
 function juicer_io_block_save($delta = '', $edit = array()) {
+
+  // Save the values for the Juicer IO block configuration into the variables table.
 
   if ($delta == 'juicer_io_block') {
     variable_set('juicer_io_feed_id', $edit['juicer_io_feed_id']);
