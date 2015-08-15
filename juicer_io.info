@@ -1,3 +1,5 @@
 name = Juicer Integration
 description = Integrate your Drupal site with the Juicer (juicer.io) social feed platform.
 core = 7.x
+
+dependencies[] = block

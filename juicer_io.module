@@ -6,27 +6,122 @@
  */
 
 /**
- * Implements hook_menu().
+ * Implements hook_block_info().
  */
-function juicer_io_menu() {
-  $items['admin/config/user-interface/juicer'] = array(
-    'title' => t('Juicer Integration'),
-    'description' => t('Manage Juicer feeds, paging, and limits.'),
-    'type' => MENU_NORMAL_ITEM,
-    'access arguments' => array('administer juicer'),
+function juicer_io_block_info() {
+  $blocks['juicer_io_block'] = array(
+    'info' => t('Juicer Embed Feed'),
+    'cache' => DRUPAL_NO_CACHE,
   );
 
-  return $items;
+  return $blocks;
 }
 
 /**
- * Implements hook_permission().
+ * Implements hook_theme().
  */
-function juicer_io_permission() {
+function juicer_io_theme($existing, $type, $theme, $path) {
   return array(
-    'administer juicer' => array(
-      'title' => t('Administer Juicer'),
-      'description' => t('Administration tasks for Juicer.'),
+    'juicer_block' => array(
+      'template' => 'block-juicer',
+      'path' => $path . '/templates',
+      // 'type' => '',
+      'variables' => array('forums' => NULL, 'topics' => NULL, 'parents' => NULL, 'tid' => NULL, 'sortby' => NULL, 'forum_per_page' => NULL),
     ),
   );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function juicer_io_block_view($delta = '') {
+
+  $block = array();
+
+  switch ($delta) {
+    case 'juicer_io_block':
+      $block['subject'] = t('Juicer Feed');
+      drupal_add_js('//assets.juicer.io/embed.js', 'external');
+      drupal_add_css('//assets.juicer.io/embed.css', 'external');
+      $block['content'] = '<ul class="juicer-feed" data-feed-id="alexlaughnan"></ul>';
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function juicer_io_block_configure($delta = '') {
+
+  $form = array();
+  if ($delta == 'juicer_io_block') {
+    // Juicer Feed ID
+    $form['juicer_io_feed_id'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Juicer IO Data Feed ID'),
+      '#default_value' => variable_get('juicer_io_feed_id', ''),
+      '#description' => t('The unique data feed URI from juicer. You can get this from your feed page at https://www.juicer.io/feeds/<feed id>'),
+    );
+
+    // Number of posts
+    $form['juicer_io_post_number'] = array(
+      '#type' => 'select',
+      '#title' => t('Number of posts'),
+      '#default_value' => variable_get('juicer_io_post_number', 100),
+      '#options' => drupal_map_assoc(array(1, 2, 3, 5, 10, 15, 20, 25, 50, 75, 100, 250, 500, 1000)),
+      '#description' => t('Juicer by default shows 100 posts (or all your posts if you have less than 100) but if you want your feed to be smaller, this is the attribute for you.'),
+    );
+
+    // Infinite scrolling pages
+    $form['juicer_io_infinite_pages'] = array(
+      '#type' => 'select',
+      '#title' => t('Number of infinite scrolling pages'),
+      '#default_value' => variable_get('juicer_io_infinite_pages', 1),
+      '#options' => drupal_map_assoc(array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 50, 100)),
+      '#description' => t('The pages attribute limits the number of times your feed will infinitely scroll. By default this is infinity, meaning if you scroll down, the juicer feed will keep adding more posts to the feed until all your posts are visible. If you set this to 1 your juicer feed will not infinitely scroll, it will only show the first page of results.If you sent it to 2 it will infinitely scroll just once.'),
+    );
+
+    // Space between posts
+    $form['juicer_io_gutter_amt'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Space between posts (column gutters)'),
+      '#default_value' => variable_get('juicer_io_gutter_amt', 20),
+      '#description' => t('The gutter attribute is the space between your posts in your feed in px. On the white style this defaults to 20 but you can edit this if you want to change the spacing.'),
+    );
+
+    // Change number of columns
+    $form['juicer_io_column_number'] = array(
+      '#type' => 'select',
+      '#title' => t('Number of recent content items to display'),
+      '#default_value' => variable_get('juicer_io_column_number', 3),
+      '#options' => drupal_map_assoc(array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)),
+      '#description' => t("This allows you to change the number of columns your feed will display in. You can also edit this attribute in your feed editor itself. Juicer will not allow a column to be less than 200px (as it doesn't look good) so if it's not showing the correct number of columns you probably need a bigger containing element for your feed."),
+    );
+
+    // Filter the posts based on social account
+    $form['juicer_io_filter'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Filter the posts based on social account'),
+      '#default_value' => variable_get('juicer_io_filter', ''),
+      '#description' => t('Pass in either a name of a social account (capitalized) like "Facebook" or "LinkedIn" to only show posts from that source (if you have two facebook sources it will show the posts from both). Or pass in the name on the account to only show posts from that particular source. For example, if I had an instagram source of #tbt in my feed I could pass in tbt to only show posts from that source.'),
+    );
+  }
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function juicer_io_block_save($delta = '', $edit = array()) {
+
+  if ($delta == 'juicer_io_block') {
+    variable_set('juicer_io_feed_id', $edit['juicer_io_feed_id']);
+    variable_set('juicer_io_post_number', $edit['juicer_io_post_number']);
+    variable_set('juicer_io_infinite_pages', $edit['juicer_io_infinite_pages']);
+    variable_set('juicer_io_gutter_amt', $edit['juicer_io_gutter_amt']);
+    variable_set('juicer_io_column_number', $edit['juicer_io_column_number']);
+    variable_set('juicer_io_filter', $edit['juicer_io_filter']);
+  }
 }
