@@ -1,1 +1,1 @@
-<ul class="juicer-feed" data-feed-id="<?php print $feed_id; ?>"></ul>
+<ul class="juicer-feed" data-feed-id="<?php print $feed_id; ?>" data-per="<?php print $post_num; ?>" data-pages="<?php print $infinite_pages; ?>" data-gutter="<?php print $gutter_amt; ?>" data-columns="<?php print $column_num; ?>" data-filter="<?php print $filters; ?>"></ul>
