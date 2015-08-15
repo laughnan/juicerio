@@ -25,8 +25,7 @@ function juicer_io_theme($existing, $type, $theme, $path) {
     'juicer_block' => array(
       'template' => 'block-juicer',
       'path' => $path . '/templates',
-      // 'type' => '',
-      'variables' => array('forums' => NULL, 'topics' => NULL, 'parents' => NULL, 'tid' => NULL, 'sortby' => NULL, 'forum_per_page' => NULL),
+      'variables' => array('feed_id' => NULL, 'post_num' => NULL, 'infinite_pages' => NULL, 'gutter_amt' => NULL, 'column_num' => NULL, 'filters' => NULL),
     ),
   );
 }
@@ -43,7 +42,7 @@ function juicer_io_block_view($delta = '') {
       $block['subject'] = t('Juicer Feed');
       drupal_add_js('//assets.juicer.io/embed.js', 'external');
       drupal_add_css('//assets.juicer.io/embed.css', 'external');
-      $block['content'] = '<ul class="juicer-feed" data-feed-id="alexlaughnan"></ul>';
+      $block['content'] = theme('juicer_block', array('feed_id' => variable_get('juicer_io_feed_id'), 'post_num' => variable_get('juicer_io_post_number'), 'infinite_pages' => variable_get('juicer_io_infinite_pages'), 'gutter_amt' => variable_get('juicer_io_gutter_amt'), 'column_num' => variable_get('juicer_io_column_number'), 'filters' => variable_get('juicer_io_filter')));
       break;
   }
 

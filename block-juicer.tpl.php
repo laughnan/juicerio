@@ -1,1 +1,1 @@
-<ul class="juicer-feed" data-feed-id="alexlaughnan"></h1></ul>
+<ul class="juicer-feed" data-feed-id="<?php print $feed_id; ?>"></h1></ul>
