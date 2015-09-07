@@ -26,9 +26,9 @@ function juicerio_update_7001() {
   variable_set('juicerio_feed_id', $feed_id);
   variable_del('juicer_io_feed_id');
 
-  $posts = variable_get('juicer_io_post_num', NULL);
+  $posts = variable_get('juicer_io_post_number', NULL);
   variable_set('juicerio_1_post_num', $posts);
-  variable_del('juicer_io_post_num');
+  variable_del('juicer_io_post_number');
 
   $pages = variable_get('juicerio_infinite_pages');
   variable_set('juicerio_1_infinite_pages', $pages);
@@ -38,11 +38,11 @@ function juicerio_update_7001() {
   variable_set('juicerio_1_gutter_amt', $gutter);
   variable_del('juicer_io_gutter_amt');
 
-  $cols = variable_get('juicer_io_column_num');
+  $cols = variable_get('juicer_io_column_number');
   variable_set('juicerio_1_column_num', $cols);
-  variable_del('juicer_io_column_num');
+  variable_del('juicer_io_column_number');
 
-  $filters = variable_get('juicer_io_filters');
+  $filters = variable_get('juicer_io_filter');
   variable_set('juicerio_1_filters', $filters);
-  variable_del('juicer_io_filters');
+  variable_del('juicer_io_filter');
 }
