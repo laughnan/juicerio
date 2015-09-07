@@ -97,10 +97,18 @@ function theme_juicerio_feed($variables) {
  * Implements hook_block_info().
  */
 function juicerio_block_info() {
-  $blocks['juicerio_block'] = array(
-    'info' => t('Juicer Embed Feed'),
-    'cache' => DRUPAL_NO_CACHE,
-  );
+  $count = variable_get('juicerio_blocks', 1);
+
+  for ($delta = 1; $delta <= $count; $delta++) {
+    $info = t('Juicer Embed Feed');
+    if ($delta > 1) {
+      $info .= ' ' . $delta;
+    }
+    $blocks['juicerio_' . $delta] = array(
+      'info' => $info,
+      'cache' => DRUPAL_NO_CACHE,
+    );
+  }
 
   return $blocks;
 }
@@ -108,23 +116,23 @@ function juicerio_block_info() {
 /**
  * Implements hook_block_view().
  */
-function juicerio_block_view($delta = '') {
+function juicerio_block_view($delta = 1) {
   $block = array();
+  $feed_id = variable_get('juicerio_feed_id');
+  $count = variable_get('juicerio_blocks', 1);
 
-  switch ($delta) {
-    case 'juicerio_block':
-      $variables = array(
-        'feed_id' => variable_get('juicerio_feed_id'),
-        'post_num' => variable_get('juicerio_post_number'),
-        'infinite_pages' => variable_get('juicerio_infinite_pages'),
-        'gutter_amt' => variable_get('juicerio_gutter_amt'),
-        'column_num' => variable_get('juicerio_column_number'),
-        'filters' => variable_get('juicerio_filter'),
-      );
+  for ($delta = 1; $delta <= $count; $delta++) {
+    $varaibles = array(
+      'feed_id' => $feed_id,
+      'post_num' => variable_get('juicerio_' . $delta . '_post_number'),
+      'infinite_pages' => variable_get('juicerio_' . $delta . '_infinite_pages'),
+      'gutter_amt' => variable_get('juicerio_' . $delta . '_gutter_amt'),
+      'column_num' => variable_get('juicerio_' . $delta . '_column_number'),
+      'filters' => variable_get('juicerio_' . $delta . '_filter'),
+    );
 
-      $block['subject'] = NULL;
-      $block['content'] = theme('juicerio_feed', $variables);
-      break;
+    $block['subject'] = NULL;
+    $block['content'] = theme('juicerio_feed', $varaibles);
   }
 
   return $block;
@@ -133,66 +141,75 @@ function juicerio_block_view($delta = '') {
 /**
  * Implements hook_block_configure().
  */
-function juicerio_block_configure($delta = '') {
+function juicerio_block_configure($delta = 1) {
   $form = array();
 
-  if ($delta == 'juicerio_block') {
+  $form['juicero'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('JucerIO feed settings'),
+    '#collapsible' => TRUE,
+  );
 
-    // Number of posts
-    $form['juicerio_post_number'] = array(
-      '#type' => 'select',
-      '#title' => t('Number of posts'),
-      '#default_value' => variable_get('juicerio_post_number', 100),
-      '#options' => drupal_map_assoc(array(1, 2, 3, 5, 10, 15, 20, 25, 50, 75, 100, 250, 500, 1000)),
-      '#description' => t('Juicer by default shows 100 posts (or all your posts if you have less than 100) but if you want your feed to be smaller, this is the attribute for you.'),
-    );
+  // Number of posts
+  $form['juicero']['juicerio_' . $delta . '_post_number'] = array(
+    '#type' => 'select',
+    '#title' => t('Number of posts'),
+    '#default_value' => variable_get('juicerio_post_number', NULL),
+    '#options' => drupal_map_assoc(array(1, 2, 3, 5, 10, 15, 20, 25, 50, 75, 100, 250, 500, 1000)),
+    '#description' => t('Set the total number of posts shown. Defaults to 100.'),
+  );
 
-    // Infinite scrolling pages
-    $form['juicerio_infinite_pages'] = array(
-      '#type' => 'select',
-      '#title' => t('Number of infinite scrolling pages'),
-      '#default_value' => variable_get('juicerio_infinite_pages', 1),
-      '#options' => drupal_map_assoc(array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 50, 100)),
-      '#description' => t('The pages attribute limits the number of times your feed will infinitely scroll. By default this is infinity, meaning if you scroll down, the juicer feed will keep adding more posts to the feed until all your posts are visible. If you set this to 1 your juicer feed will not infinitely scroll, it will only show the first page of results.If you sent it to 2 it will infinitely scroll just once.'),
-    );
+  // Infinite scrolling pages
+  $form['juicero']['juicerio_' . $delta . '_infinite_pages'] = array(
+    '#type' => 'select',
+    '#title' => t('Number of scrolling pages'),
+    '#default_value' => variable_get('juicerio_infinite_pages', NULL),
+    '#options' => drupal_map_assoc(array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 50, 100)),
+    '#description' => t('By default your feed scrolls infinitely: more and more posts will keep being added to the feed until all your posts are visible.<br />
+      If set to 1, only the first page of results will be visible. If set to 2, the feed will scroll just once.'),
+  );
 
-    // Space between posts
-    $form['juicerio_gutter_amt'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Space between posts (column gutters)'),
-      '#default_value' => variable_get('juicerio_gutter_amt', 20),
-      '#description' => t('The gutter attribute is the space between your posts in your feed in px. On the white style this defaults to 20 but you can edit this if you want to change the spacing.'),
-    );
+  // Space between posts
+  $form['juicero']['juicerio_' . $delta . '_gutter_amt'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Column gutter size'),
+    '#field_suffix' => t('pixels'),
+    '#size' => 5,
+    '#default_value' => variable_get('juicerio_gutter_amt', NULL),
+    '#description' => t('The column gutter is the horrizontal space between columns of posts. Defaults to 20 pixels.'),
+  );
 
-    // Change number of columns
-    $form['juicerio_column_number'] = array(
-      '#type' => 'select',
-      '#title' => t('Number of recent content items to display'),
-      '#default_value' => variable_get('juicerio_column_number', 3),
-      '#options' => drupal_map_assoc(array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)),
-      '#description' => t("This allows you to change the number of columns your feed will display in. You can also edit this attribute in your feed editor itself. Juicer will not allow a column to be less than 200px (as it doesn't look good) so if it's not showing the correct number of columns you probably need a bigger containing element for your feed."),
-    );
+  // Change number of columns
+  $form['juicero']['juicerio_' . $delta . '_column_number'] = array(
+    '#type' => 'select',
+    '#title' => t('Number of columns'),
+    '#default_value' => variable_get('juicerio_column_number', NULL),
+    '#options' => drupal_map_assoc(array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)),
+    '#description' => t("Columns are not allowed to be less than 200px (as it doesn't look good). If the number of columns set here is not respected, increase the size of the containing element."),
+  );
 
-    // Filter the posts based on social account
-    $form['juicerio_filter'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Filter the posts based on social account'),
-      '#default_value' => variable_get('juicerio_filter', ''),
-      '#description' => t('Pass in either a name of a social account (capitalized) like "Facebook" or "LinkedIn" to only show posts from that source (if you have two facebook sources it will show the posts from both). Or pass in the name on the account to only show posts from that particular source. For example, if I had an instagram source of #tbt in my feed I could pass in tbt to only show posts from that source.'),
-    );
-  }
+  // Filter the posts based on social account
+  $form['juicero']['juicerio_' . $delta . '_filter'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Filter the posts based on social account'),
+    '#default_value' => variable_get('juicerio_filter', NULL),
+    '#description' => t('To filter your posts, enter either the capitalized name of the source, or the account name of source source.<br />
+       Example: If you have an Instagram source of #tbt, enter either <em>tbt</em> or <em>Instagram</em> to only show posts from that source.<br />
+       Note: If you have multiple Instagram srouces entering <em>Instagram<em> will show posts from all of them.'),
+  );
+
   return $form;
 }
 
 /**
  * Implements hook_block_save().
  */
-function juicerio_block_save($delta = '', $edit = array()) {
+function juicerio_block_save($delta = 1, $edit = array()) {
   if ($delta == 'juicerio_block') {
-    variable_set('juicerio_post_number', $edit['juicerio_post_number']);
-    variable_set('juicerio_infinite_pages', $edit['juicerio_infinite_pages']);
-    variable_set('juicerio_gutter_amt', $edit['juicerio_gutter_amt']);
-    variable_set('juicerio_column_number', $edit['juicerio_column_number']);
-    variable_set('juicerio_filter', $edit['juicerio_filter']);
+    variable_set('juicerio_' . $delta . '_post_number', $edit['juicerio_post_number']);
+    variable_set('juicerio_' . $delta . '_infinite_pages', $edit['juicerio_infinite_pages']);
+    variable_set('juicerio_' . $delta . '_gutter_amt', $edit['juicerio_gutter_amt']);
+    variable_set('juicerio_' . $delta . '_column_number', $edit['juicerio_column_number']);
+    variable_set('juicerio_' . $delta . '_filter', $edit['juicerio_filter']);
   }
 }
