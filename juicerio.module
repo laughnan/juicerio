@@ -5,6 +5,42 @@
  */
 
 /**
+ * Implements hook_permission();
+ */
+function juicerio_permission() {
+  return array(
+    'administer juicer' => array(
+      'title' => t('Administer Juicer'),
+      'description' => t('Administer Juicer IO social media feed.'),
+    )
+  );
+}
+
+/**
+ * Implements hook_menu();
+ */
+function juicerio_menu() {
+  $items['admin/config/services/juicerio'] = array(
+    'title' => 'Juicer settings',
+    'description' => 'Juicer IO social media feed settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('juicerio_settings_form'),
+    'access arguments' => array('administer juicer'),
+    'file' => 'juicerio.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter();
+ */
+function juicerio_form_juicerio_settings_form_alter(&$form, &$form_state) {
+  // Move the submit button above the example for better UX.
+  $form['actions']['#weight'] = 9;
+}
+
+/**
  * Implements hook_block_info().
  */
 function juicerio_block_info() {
@@ -33,7 +69,6 @@ function juicerio_theme($existing, $type, $theme, $path) {
  * Implements hook_block_view().
  */
 function juicerio_block_view($delta = '') {
-
   $block = array();
 
   switch ($delta) {
@@ -54,16 +89,9 @@ function juicerio_block_view($delta = '') {
  * Implements hook_block_configure().
  */
 function juicerio_block_configure($delta = '') {
-
   $form = array();
+
   if ($delta == 'juicerio_block') {
-    // Juicer Feed ID
-    $form['juicerio_feed_id'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Juicer IO Data Feed ID'),
-      '#default_value' => variable_get('juicerio_feed_id', ''),
-      '#description' => t('The unique data feed URI from juicer. You can get this from your feed page at https://www.juicer.io/feeds/<feed id>'),
-    );
 
     // Number of posts
     $form['juicerio_post_number'] = array(
@@ -115,11 +143,7 @@ function juicerio_block_configure($delta = '') {
  * Implements hook_block_save().
  */
 function juicerio_block_save($delta = '', $edit = array()) {
-
-  // Save the values for the Juicer IO block configuration into the variables table.
-
   if ($delta == 'juicerio_block') {
-    variable_set('juicerio_feed_id', $edit['juicerio_feed_id']);
     variable_set('juicerio_post_number', $edit['juicerio_post_number']);
     variable_set('juicerio_infinite_pages', $edit['juicerio_infinite_pages']);
     variable_set('juicerio_gutter_amt', $edit['juicerio_gutter_amt']);

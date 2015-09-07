@@ -1,5 +1,6 @@
 name = Juicer social feed
 description = Integration with the Juicer (juicer.io) social feed platform.
 core = 7.x
+configure = admin/config/services/juicerio
 
 dependencies[] = block
