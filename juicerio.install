@@ -1,0 +1,19 @@
+<?php
+/**
+ * @file
+ * Install, Ununstall, and update functions for JuicerIO module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function juicerio_uninstall() {
+  // remove these variables if not using the module anymore.
+  variable_del('juicerio_feed_id');
+  variable_del('juicerio_blocks');
+  variable_del('juicerio_post_num');
+  variable_del('juicerio_infinite_pages');
+  variable_del('juicerio_gutter_amt');
+  variable_del('juicerio_column_num');
+  variable_del('juicerio_filters');
+}
