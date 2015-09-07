@@ -87,7 +87,7 @@ function theme_juicerio_feed($variables) {
     $output = '<ul class="juicer-feed" ' . $attributes . '></ul>';
   }
   else {
-    $output = t('Please !configure to see a social media feed.', array('!configure' => l(t('provide a Juicer account name'), 'admin/config/services/juicer')));
+    $output = t('Please !configure to see a social media feed.', array('!configure' => l(t('provide a Juicer account name'), 'admin/config/services/juicerio')));
   }
 
   return $output;
