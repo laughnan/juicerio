@@ -48,7 +48,7 @@ function juicerio_settings_form($form, &$form_state) {
   );
   $form['example']['example-feed'] = array(
     '#type' => 'markup',
-    '#markup' => theme('juicerio_block', array('feed_id' => $juicer_name)),
+    '#markup' => theme('juicerio_feed', array('feed_id' => $juicer_name)),
   );
 
   return system_settings_form($form);

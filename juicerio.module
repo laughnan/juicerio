@@ -41,6 +41,59 @@ function juicerio_form_juicerio_settings_form_alter(&$form, &$form_state) {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function juicerio_theme($existing, $type, $theme, $path) {
+  return array(
+    'juicerio_feed' => array(
+      'variables' => array(
+        'feed_id' => NULL,
+        'post_num' => NULL,
+        'infinite_pages' => NULL,
+        'gutter_amt' => NULL,
+        'column_num' => NULL,
+        'filters' => NULL,
+      ),
+    ),
+  );
+}
+
+function theme_juicerio_feed($variables) {
+  if ($variables['feed_id'] != NULL) {
+    // Add in the Juicer IO Javascript and CSS files
+    drupal_add_js('//assets.juicer.io/embed.js', array('type' => 'external'));
+    drupal_add_css('//assets.juicer.io/embed.css', 'external');
+
+    // Prepare all the attributes.
+    $attributes = 'data-feed-id="' . $variables['feed_id'] . '"';
+
+    if ($variables['post_num'] != NULL) {
+      $attributes .= ' data-per="' . $variables['post_num'] .'"';
+    }
+    if ($variables['infinite_pages'] != NULL) {
+      $attributes .= ' data-pages="' . $variables['infinite_pages'] . '"';
+    }
+    if ($variables['gutter_amt'] != NULL) {
+      $attributes .= ' data-gutter="' . $variables['gutter_amt'] . '"';
+    }
+    if ($variables['column_num'] != NULL) {
+      $attributes .= ' data-columns="' . $variables['column_num'] . '"';
+    }
+    if ($variables['filters'] != NULL) {
+      $attributes .= ' data-filter="' . $variables['filters'] . '"';
+    }
+
+    // Assemble the output.
+    $output = '<ul class="juicer-feed" ' . $attributes . '></ul>';
+  }
+  else {
+    $output = t('Please !configure to see a social media feed.', array('!configure' => l(t('provide a Juicer account name'), 'admin/config/services/juicer')));
+  }
+
+  return $output;
+}
+
+/**
  * Implements hook_block_info().
  */
 function juicerio_block_info() {
@@ -53,19 +106,6 @@ function juicerio_block_info() {
 }
 
 /**
- * Implements hook_theme().
- */
-function juicerio_theme($existing, $type, $theme, $path) {
-  return array(
-    'juicer_block' => array(
-      'template' => 'block-juicer',
-      'path' => $path . '/templates',
-      'variables' => array('feed_id' => NULL, 'post_num' => NULL, 'infinite_pages' => NULL, 'gutter_amt' => NULL, 'column_num' => NULL, 'filters' => NULL),
-    ),
-  );
-}
-
-/**
  * Implements hook_block_view().
  */
 function juicerio_block_view($delta = '') {
@@ -73,12 +113,17 @@ function juicerio_block_view($delta = '') {
 
   switch ($delta) {
     case 'juicerio_block':
-      $block['subject'] = t('Juicer Feed');
-      // Add in the Juicer IO Javascript and CSS files
-      drupal_add_js('//assets.juicer.io/embed.js', 'external');
-      drupal_add_css('//assets.juicer.io/embed.css', 'external');
-      // Return the block content from the 'juicer_block' theme
-      $block['content'] = theme('juicer_block', array('feed_id' => variable_get('juicerio_feed_id'), 'post_num' => variable_get('juicerio_post_number'), 'infinite_pages' => variable_get('juicerio_infinite_pages'), 'gutter_amt' => variable_get('juicerio_gutter_amt'), 'column_num' => variable_get('juicerio_column_number'), 'filters' => variable_get('juicerio_filter')));
+      $variables = array(
+        'feed_id' => variable_get('juicerio_feed_id'),
+        'post_num' => variable_get('juicerio_post_number'),
+        'infinite_pages' => variable_get('juicerio_infinite_pages'),
+        'gutter_amt' => variable_get('juicerio_gutter_amt'),
+        'column_num' => variable_get('juicerio_column_number'),
+        'filters' => variable_get('juicerio_filter'),
+      );
+
+      $block['subject'] = NULL;
+      $block['content'] = theme('juicerio_feed', $variables);
       break;
   }
 
