@@ -51,5 +51,10 @@ function juicerio_settings_form($form, &$form_state) {
     '#markup' => theme('juicerio_feed', array('feed_id' => $juicer_name)),
   );
 
-  return system_settings_form($form);
+  $form = system_settings_form($form);
+
+  // Move the submit button above the example for better UX.
+  $form['actions']['#weight'] = 9;
+
+  return $form;
 }

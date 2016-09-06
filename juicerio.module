@@ -33,14 +33,6 @@ function juicerio_menu() {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter();
- */
-function juicerio_form_juicerio_settings_form_alter(&$form, &$form_state) {
-  // Move the submit button above the example for better UX.
-  $form['actions']['#weight'] = 9;
-}
-
-/**
  * Implements hook_theme().
  */
 function juicerio_theme($existing, $type, $theme, $path) {
