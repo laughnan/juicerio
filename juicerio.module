@@ -114,10 +114,12 @@ function juicerio_block_view($delta = 1) {
   $count = variable_get('juicerio_blocks', 1);
 
   for ($delta = 1; $delta <= $count; $delta++) {
+    $infinite = variable_get('juicerio_' . $delta . '_infinite_pages');
+    $infinite_pages = ($infinite === 0) ? NULL : $infinite;
     $varaibles = array(
       'feed_id' => $feed_id,
       'post_num' => variable_get('juicerio_' . $delta . '_post_number'),
-      'infinite_pages' => variable_get('juicerio_' . $delta . '_infinite_pages'),
+      'infinite_pages' => $infinite_pages,
       'gutter_amt' => variable_get('juicerio_' . $delta . '_gutter_amt'),
       'column_num' => variable_get('juicerio_' . $delta . '_column_number'),
       'filters' => variable_get('juicerio_' . $delta . '_filter'),
@@ -155,9 +157,9 @@ function juicerio_block_configure($delta = 1) {
   $form['juicero']['juicerio_' . $delta . '_infinite_pages'] = array(
     '#type' => 'select',
     '#title' => t('Number of scrolling pages'),
-    '#default_value' => variable_get('juicerio_' . $delta . '_infinite_pages', NULL),
-    '#options' => drupal_map_assoc(array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 50, 100)),
-    '#description' => t('By default your feed scrolls infinitely: more and more posts will keep being added to the feed until all your posts are visible.<br />
+    '#default_value' => variable_get('juicerio_' . $delta . '_infinite_pages', 0),
+    '#options' => drupal_map_assoc(array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 50, 100)),
+    '#description' => t('Set to 0 your feed will scroll infinitely: more and more posts will keep being added to the feed until all your posts are visible.<br />
       If set to 1, only the first page of results will be visible. If set to 2, the feed will scroll just once.'),
   );
 
