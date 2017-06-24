@@ -1,0 +1,9 @@
+<?php
+
+/**
+ * Implements hook_uninstall().
+ * Remove the values that we have saved in configuration.
+ */
+function juicerio_uninstall() {
+  \Drupal::configFactory()->getEditable('juicer.settings')->delete();
+}
