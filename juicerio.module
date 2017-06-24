@@ -140,7 +140,7 @@ function juicerio_block_configure($delta = 1) {
 
   $form['juicero'] = array(
     '#type' => 'fieldset',
-    '#title' => t('JucerIO feed settings'),
+    '#title' => t('Juicer feed settings'),
     '#collapsible' => TRUE,
   );
 
