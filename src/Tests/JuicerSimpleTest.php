@@ -49,12 +49,29 @@ class JuicerSimpleTest extends WebTestBase {
   /**
    * Test Juicer page.
    *
+   * Enable Juicer and see if it can return its main
+   * page. Should return a 403.
+   */
+  public function testJuicerAnonConfigFormMenu() {
+    // Verify that anonymous cannot access the config page.
+    $this->drupalGet('admin/config/services/juicerio');
+    $this->assertResponse(403, 'Anon users cannot access the config page.');
+  }
+
+  /**
+   * Test Juicer page.
+   *
    * Enable Juicer and see if it can successfully return its main
    * page.
    */
   public function testJuicerConfigFormMenu() {
-    // Verify that anonymous cannot access the config page.
+    // Verify that authenticated users with correct perms can access the config page.
+    // Create a user.
+    $test_user = $this->drupalCreateUser(array('administer juicer'));
+    // Log them in.
+    $this->drupalLogin($test_user);
+
     $this->drupalGet('admin/config/services/juicerio');
-    $this->assertResponse(403, 'Anon users cannot access the config page.');
+    $this->assertResponse(200, 'Valid user can access the config page.');
   }
 }
