@@ -51,9 +51,8 @@ Current Maintainers
 Credits
 -------
 
-This module was originally created by Alex Laughnan of Metal Toad Media
-(http://www.metaltoad.com)
+This module was originally created by Alex Laughnan of acreative.
+(https://www.acreative.io)
 
 This module was has received contributions by Jeneration Web Development for the
 Metropolitan Transportation Commission (http://mtc.ca.gov)
-
