@@ -84,7 +84,7 @@ class JuicerEmbedFeedBlock extends BlockBase implements BlockPluginInterface  {
       '#default_value' => isset($config[$delta . '_filter']) ? $config[$delta . '_filter'] : '',
       '#description' => t('To filter your posts, enter either the capitalized name of the source, or the account name of source source.<br />
        Example: If you have an Instagram source of #tbt, enter either <em>tbt</em> or <em>Instagram</em> to only show posts from that source.<br />
-       Note: If you have multiple Instagram srouces entering <em>Instagram</em> will show posts from all of them.'),
+       Note: If you have multiple Instagram sources entering <em>Instagram</em> will show posts from all of them.'),
     ];
 
     return $form;
