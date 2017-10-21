@@ -7,7 +7,7 @@ use Drupal\Component\Plugin\Derivative\DeriverBase;
 class JuicerEmbedFeedBlockDerivative extends DeriverBase  {
 
   public function getDerivativeDefinitions($base_plugin_definition) {
-    $count = \Drupal::config('juicer.settings')->get('juicer_blocks');
+    $count = \Drupal::config('juicerio.settings')->get('juicer_blocks');
 
     for ($delta = 1; $delta <= $count; $delta++) {
       $info = t('Juicer Embed Feed');

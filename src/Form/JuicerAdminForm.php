@@ -17,14 +17,14 @@ class JuicerAdminForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return ['juicer.settings'];
+    return ['juicerio.settings'];
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $site_config = $this->config('juicer.settings');
+    $site_config = $this->config('juicerio.settings');
 
     $form['juicer_feed_id'] = array(
       '#type' => 'textfield',
@@ -48,7 +48,7 @@ class JuicerAdminForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('juicer.settings')
+    $this->config('juicerio.settings')
       ->set('juicer_feed_id', $form_state->getValue('juicer_feed_id'))
       ->set('juicer_blocks', $form_state->getValue('juicer_blocks'))
       ->save();

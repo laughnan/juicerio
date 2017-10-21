@@ -106,7 +106,7 @@ class JuicerEmbedFeedBlock extends BlockBase implements BlockPluginInterface  {
 
   public function build() {
     $delta = $this->getDerivativeId();
-    $juicer_feed_id = \Drupal::config('juicer.settings')->get('juicer_feed_id');
+    $juicer_feed_id = \Drupal::config('juicerio.settings')->get('juicer_feed_id');
 
     return [
       '#theme' => 'juicerio_feed',
