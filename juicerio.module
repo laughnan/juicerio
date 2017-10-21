@@ -53,7 +53,8 @@ function juicerio_theme($existing, $type, $theme, $path) {
 function theme_juicerio_feed($variables) {
   if ($variables['feed_id'] != NULL) {
     // Add in the Juicer IO Javascript and CSS files
-    drupal_add_js('//assets.juicer.io/embed-no-jquery.js', array('type' => 'external'));
+    $js_embed = variable_get('juicerio_js_embed', '//assets.juicer.io/embed-no-jquery.js');
+    drupal_add_js($js_embed, array('type' => 'external'));
     drupal_add_css('//assets.juicer.io/embed.css', 'external');
 
     // Prepare all the attributes.
