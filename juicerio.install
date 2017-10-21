@@ -14,3 +14,13 @@ function juicerio_uninstall() {
 function juicerio_update_8001() {
   \Drupal::configFactory()->rename('juicer.settings', 'juicerio.settings');
 }
+
+/**
+ * Due to support alternate libraries, add in the default Javascript embed.
+ */
+function juicerio_update_8001() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('juicerio.settings');
+  $config->set('juicer_js_embed', 'juicerio.embed_no_jquery');
+  $config->save(TRUE);
+}

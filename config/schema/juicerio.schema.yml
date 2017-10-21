@@ -10,3 +10,6 @@ juicerio.settings:
     juicer_blocks:
       type: text
       label: 'Number of Juicer feed blocks'
+    juicer_js_embed:
+      type: text
+      label: 'Javascript library of Juicer to attach'

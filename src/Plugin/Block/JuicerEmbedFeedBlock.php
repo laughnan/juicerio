@@ -107,6 +107,8 @@ class JuicerEmbedFeedBlock extends BlockBase implements BlockPluginInterface  {
   public function build() {
     $delta = $this->getDerivativeId();
     $juicer_feed_id = \Drupal::config('juicerio.settings')->get('juicer_feed_id');
+    // Permit the alternative JS library to be attached here. [#2917855]
+    $juicer_library = \Drupal::config('juicerio.settings')->get('juicer_js_embed');
 
     return [
       '#theme' => 'juicerio_feed',
@@ -116,6 +118,11 @@ class JuicerEmbedFeedBlock extends BlockBase implements BlockPluginInterface  {
       '#gutter_amt' => $this->configuration[$delta . '_gutter_amt'],
       '#column_num' => $this->configuration[$delta . '_column_number'],
       '#filters' => $this->configuration[$delta . '_filter'],
+      '#attached' => array(
+        'library' => array(
+          'juicerio/' . $juicer_library,
+        ),
+      ),
     ];
   }
 }
